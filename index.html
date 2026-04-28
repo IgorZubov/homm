@@ -288,14 +288,95 @@ footer {
 
 @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
 .card { animation: fadeIn 0.4s ease; }
+
+/* ── HoMM5 THEME OVERRIDES ── */
+body.homm5 {
+  --gold:      #6aacff;
+  --gold-dark: #2a5caa;
+  --parchment: #c8dcf8;
+  --parch-dark:#8aaae0;
+  --bg:        #040810;
+  --bg2:       #080e1c;
+  --stone:     #101828;
+  --stone2:    #182438;
+  --text:      #c0d4f0;
+  --text-dim:  #5070a0;
+  --shadow:    rgba(0,0,10,0.8);
+  background-image:
+    radial-gradient(ellipse at top, #0a1228 0%, #040810 60%),
+    repeating-linear-gradient(
+      45deg, transparent, transparent 40px,
+      rgba(106,172,255,0.02) 40px, rgba(106,172,255,0.02) 41px
+    );
+}
+
+body.homm5 .card {
+  background: linear-gradient(160deg, var(--stone) 0%, var(--bg2) 100%);
+  border-color: var(--gold-dark);
+  box-shadow: 0 0 0 1px #000, 0 8px 40px var(--shadow),
+              inset 0 1px 0 rgba(106,172,255,0.12), 0 0 30px rgba(42,92,170,0.15);
+}
+
+body.homm5 .progress-bar {
+  background: linear-gradient(to right, var(--gold-dark), var(--gold));
+  box-shadow: 0 0 10px var(--gold);
+}
+
+body.homm5 h1            { text-shadow: 0 0 25px #6aacff55, 2px 2px 6px #000; }
+body.homm5 .btn-answer:hover:not(:disabled) { border-color: var(--gold); color: var(--gold); }
+body.homm5 .btn-next     { background: linear-gradient(160deg, #2a5caa, #152a5a); border-color: var(--gold); }
+body.homm5 .btn-next:hover { background: linear-gradient(160deg, #6aacff, #2a5caa); }
+body.homm5 .banner-deco::before,
+body.homm5 .banner-deco::after {
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+}
+body.homm5 .rule-line { background: linear-gradient(to right, transparent, var(--gold-dark), transparent); }
+
+/* ── GAME SWITCHER ── */
+.game-switcher {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 1.2rem;
+}
+
+.btn-game {
+  background: linear-gradient(160deg, var(--stone2), var(--bg2));
+  border: 1px solid var(--gold-dark);
+  border-radius: 3px;
+  color: var(--text-dim);
+  font-family: var(--font-title);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  padding: 0.45rem 1.2rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.15s;
+}
+
+.btn-game:hover { border-color: var(--gold); color: var(--text); }
+
+.btn-game.active {
+  background: linear-gradient(160deg, var(--gold-dark), #3a2a08);
+  border-color: var(--gold);
+  color: var(--parchment);
+}
+
+body.homm5 .btn-game.active {
+  background: linear-gradient(160deg, #2a5caa, #101828);
+}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="banner-deco"><span class="crown">♛</span></div>
-  <h1>Heroes of Might &amp; Magic III</h1>
-  <div class="subtitle">Trivia Challenge — Test Your Knowledge of Erathia</div>
+  <div class="game-switcher">
+    <button class="btn-game active" id="btn-h3" onclick="switchGame('h3')">⚔ HoMM III</button>
+    <button class="btn-game"        id="btn-h5" onclick="switchGame('h5')">✦ HoMM V</button>
+  </div>
+  <div class="banner-deco"><span class="crown" id="banner-icon">♛</span></div>
+  <h1 id="main-title">Heroes of Might &amp; Magic III</h1>
+  <div class="subtitle" id="main-subtitle">Trivia Challenge — Test Your Knowledge of Erathia</div>
   <div class="rule-line"></div>
 </header>
 
@@ -317,7 +398,100 @@ footer {
 <footer>⚔ Heroes of Might &amp; Magic III — Knowledge of Erathia ⚔</footer>
 
 <script>
-const QUESTIONS = [
+const QUESTIONS_H5 = [
+  {
+    q: "How many town factions are in the base HoMM5 game (no expansions)?",
+    opts: ["4", "5", "6", "7"],
+    a: 2,
+    note: "Six factions: Haven, Inferno, Necropolis, Dungeon, Sylvan, and Academy."
+  },
+  {
+    q: "What is the name of the world in HoMM5 (replacing Erathia from HoMM3)?",
+    opts: ["Axeoth", "Ashan", "Enroth", "Antagarich"],
+    a: 1,
+    note: "HoMM5 introduced a brand-new setting called Ashan, with a redesigned lore and pantheon."
+  },
+  {
+    q: "What is the upgraded form of the Angel in HoMM5's Haven faction?",
+    opts: ["Seraphim", "Archangel", "Celestial", "Holy Avenger"],
+    a: 1,
+    note: "Angels upgrade to Archangels in Haven — Tier-7 and among the most powerful creatures."
+  },
+  {
+    q: "Which faction in HoMM5 has the unique racial ability called 'Gating'?",
+    opts: ["Necropolis", "Dungeon", "Sylvan", "Inferno"],
+    a: 3,
+    note: "Inferno's Gating ability summons extra demon creatures during combat, unique to that faction."
+  },
+  {
+    q: "What is the name of the queen who is the central protagonist of HoMM5's main story?",
+    opts: ["Catherine", "Isabel", "Biara", "Freyda"],
+    a: 1,
+    note: "Queen Isabel of the Griffin Empire is the central character — her capture drives the main campaign."
+  },
+  {
+    q: "Which school of magic in HoMM5 specialises in dealing direct damage to enemies?",
+    opts: ["Dark Magic", "Light Magic", "Summoning Magic", "Destructive Magic"],
+    a: 3,
+    note: "Destructive Magic covers high-damage spells like Fireball, Chain Lightning, and Implosion."
+  },
+  {
+    q: "What is the base (non-upgraded) Tier-7 creature of the Sylvan (Elf) faction in HoMM5?",
+    opts: ["Ancient Treant", "Green Dragon", "Silver Unicorn", "Forest Guardian"],
+    a: 1,
+    note: "Green Dragon is Sylvan's Tier-7 unit; it upgrades to the Emerald Dragon."
+  },
+  {
+    q: "What is the racial ability of the Necropolis faction in HoMM5?",
+    opts: ["Blood Rage", "Necromancy", "Dark Ritual", "Soul Harvest"],
+    a: 1,
+    note: "Necromancy raises a percentage of slain enemy troops as skeletons after each battle."
+  },
+  {
+    q: "Which faction in HoMM5 is home to dark elves and shadow magic?",
+    opts: ["Inferno", "Necropolis", "Dungeon", "Academy"],
+    a: 2,
+    note: "Dungeon is the Dark Elf faction, specialising in shadow spells and assassination."
+  },
+  {
+    q: "What is the Tier-2 base unit of the Haven faction in HoMM5?",
+    opts: ["Crossbowman", "Archer", "Hunter", "Footman"],
+    a: 1,
+    note: "Archer is Haven's Tier-2 ranged unit; it upgrades to the Marksman."
+  },
+  {
+    q: "How many creature tiers does each faction have in HoMM5?",
+    opts: ["5", "6", "7", "8"],
+    a: 2,
+    note: "Each faction has exactly 7 creature tiers, each upgradeable to a stronger form."
+  },
+  {
+    q: "What is the base Tier-7 creature of the Academy faction in HoMM5?",
+    opts: ["Archmage", "Djinn Sultan", "Titan", "Colossus"],
+    a: 2,
+    note: "Titan is Academy's Tier-7 unit; it upgrades to the Storm Titan."
+  },
+  {
+    q: "What is the true identity of the demon hero Agrael in HoMM5's story?",
+    opts: ["Veyer", "Raelag", "Xeron", "Kha-Beleth"],
+    a: 1,
+    note: "Agrael is secretly Raelag, a dark elf who infiltrated the demons — later a key hero in the Dungeon campaign."
+  },
+  {
+    q: "What is the base Tier-7 creature of the Inferno faction in HoMM5?",
+    opts: ["Efreet Sultan", "Pit Lord", "Devil", "Arch Demon"],
+    a: 2,
+    note: "Devil is Inferno's Tier-7 base unit; it upgrades to the Arch Devil."
+  },
+  {
+    q: "Which HoMM5 expansion pack introduced the Fortress faction (Dwarves)?",
+    opts: ["Tribes of the East", "Hammers of Fate", "Shades of Darkness", "Blood and Ice"],
+    a: 1,
+    note: "Hammers of Fate (2006) added the Fortress faction with Dwarves and Rune magic."
+  }
+];
+
+const QUESTIONS_H3 = [
   {
     q: "How many primary skills are there in Heroes of Might & Magic III?",
     opts: ["3 — Attack, Defense, Spell Power",
@@ -417,25 +591,79 @@ const QUESTIONS = [
 ];
 
 const LETTERS = ['A','B','C','D'];
-const RANKS = [
+const RANKS_H3 = [
   [0,  4,  "A wandering peasant… Keep adventuring!"],
   [5,  7,  "A promising squire. Not bad!"],
   [8,  10, "A seasoned knight of Erathia."],
   [11, 13, "A true hero of Erathia!"],
   [14, 15, "A living Legend of Erathia! ♛"]
 ];
+const RANKS_H5 = [
+  [0,  4,  "A lost traveller in Ashan…"],
+  [5,  7,  "An apprentice of the Griffin Empire."],
+  [8,  10, "A seasoned champion of Ashan."],
+  [11, 13, "A true hero of the Seven Cities!"],
+  [14, 15, "A living Legend of Ashan! ✦"]
+];
 
+const GAME_META = {
+  h3: { title: "Heroes of Might &amp; Magic III", subtitle: "Trivia Challenge — Test Your Knowledge of Erathia",
+        icon: "♛", footer: "⚔ Heroes of Might &amp; Magic III — Knowledge of Erathia ⚔",
+        qs: null, ranks: RANKS_H3 },
+  h5: { title: "Heroes of Might &amp; Magic V",  subtitle: "Trivia Challenge — Test Your Knowledge of Ashan",
+        icon: "✦", footer: "✦ Heroes of Might &amp; Magic V — Knowledge of Ashan ✦",
+        qs: QUESTIONS_H5, ranks: RANKS_H5 }
+};
+GAME_META.h3.qs = QUESTIONS_H3;
+
+let activeGame = 'h3';
 let current = 0, score = 0, answered = false;
 const history = [];
 
-function getRank(s) { return RANKS.find(([lo,hi]) => s >= lo && s <= hi)[2]; }
+function getRank(s) {
+  return GAME_META[activeGame].ranks.find(([lo,hi]) => s >= lo && s <= hi)[2];
+}
+
+function switchGame(id) {
+  if (id === activeGame) return;
+  activeGame = id;
+  const meta = GAME_META[id];
+
+  document.getElementById('main-title').innerHTML    = meta.title;
+  document.getElementById('main-subtitle').textContent = meta.subtitle;
+  document.getElementById('banner-icon').textContent  = meta.icon;
+  document.querySelector('footer').innerHTML           = meta.footer;
+  document.getElementById('btn-h3').classList.toggle('active', id === 'h3');
+  document.getElementById('btn-h5').classList.toggle('active', id === 'h5');
+  document.body.classList.toggle('homm5', id === 'h5');
+
+  current = 0; score = 0; answered = false; history.length = 0;
+  rebuildCard();
+  renderQuestion();
+}
+
+function rebuildCard() {
+  document.getElementById('quiz-card').innerHTML = `
+    <div class="progress-label">
+      <span id="prog-text">Question 1 of 15</span>
+      <span id="score-text">Score: 0</span>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar" id="prog-bar" style="width:0%"></div></div>
+    <div class="question-num" id="q-num">Question 1</div>
+    <div class="question-text" id="q-text"></div>
+    <div class="answers" id="answers"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="btn-next hidden" id="btn-next">Next Question ▶</button>`;
+  document.getElementById('btn-next').addEventListener('click', nextQ);
+}
 
 function renderQuestion() {
-  const q = QUESTIONS[current];
+  const q = GAME_META[activeGame].qs[current];
   answered = false;
-  document.getElementById('prog-text').textContent = `Question ${current+1} of ${QUESTIONS.length}`;
+  const total = GAME_META[activeGame].qs.length;
+  document.getElementById('prog-text').textContent = `Question ${current+1} of ${total}`;
   document.getElementById('score-text').textContent = `Score: ${score}`;
-  document.getElementById('prog-bar').style.width = `${(current / QUESTIONS.length) * 100}%`;
+  document.getElementById('prog-bar').style.width = `${(current / total) * 100}%`;
   document.getElementById('q-num').textContent = `Question ${current + 1}`;
   document.getElementById('q-text').textContent = q.q;
   document.getElementById('feedback').textContent = '';
@@ -456,7 +684,8 @@ function renderQuestion() {
 function pick(idx) {
   if (answered) return;
   answered = true;
-  const q = QUESTIONS[current];
+  const qs = GAME_META[activeGame].qs;
+  const q = qs[current];
   const btns = document.querySelectorAll('.btn-answer');
   const ok = idx === q.a;
   if (ok) score++;
@@ -474,7 +703,7 @@ function pick(idx) {
   document.getElementById('score-text').textContent = `Score: ${score}`;
   const nb = document.getElementById('btn-next');
   nb.classList.remove('hidden');
-  nb.textContent = current < QUESTIONS.length - 1 ? 'Next Question ▶' : 'See Results ▶';
+  nb.textContent = current < qs.length - 1 ? 'Next Question ▶' : 'See Results ▶';
 }
 
 function showResults() {
@@ -489,7 +718,7 @@ function showResults() {
   document.getElementById('quiz-card').innerHTML = `
     <div class="results">
       <div class="results-title">Quest Complete!</div>
-      <div class="results-score">${score} / ${QUESTIONS.length}</div>
+      <div class="results-score">${score} / ${GAME_META[activeGame].qs.length}</div>
       <div class="results-msg">${getRank(score)}</div>
       <div class="results-breakdown">${bd}</div>
       <button class="btn-next" onclick="restart()">Play Again ↺</button>
@@ -498,24 +727,13 @@ function showResults() {
 
 function restart() {
   current = 0; score = 0; answered = false; history.length = 0;
-  document.getElementById('quiz-card').innerHTML = `
-    <div class="progress-label">
-      <span id="prog-text">Question 1 of 15</span>
-      <span id="score-text">Score: 0</span>
-    </div>
-    <div class="progress-bar-wrap"><div class="progress-bar" id="prog-bar" style="width:0%"></div></div>
-    <div class="question-num" id="q-num">Question 1</div>
-    <div class="question-text" id="q-text"></div>
-    <div class="answers" id="answers"></div>
-    <div class="feedback" id="feedback"></div>
-    <button class="btn-next hidden" id="btn-next">Next Question ▶</button>`;
-  document.getElementById('btn-next').addEventListener('click', nextQ);
+  rebuildCard();
   renderQuestion();
 }
 
 function nextQ() {
   current++;
-  if (current >= QUESTIONS.length) showResults();
+  if (current >= GAME_META[activeGame].qs.length) showResults();
   else renderQuestion();
 }
 
