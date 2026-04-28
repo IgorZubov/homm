@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heroes of Might & Magic III — Trivia</title>
+<style>
+:root {
+  --gold:      #c8a84b;
+  --gold-dark: #7a5c1e;
+  --parchment: #f0dfa0;
+  --parch-dark:#c8b06a;
+  --bg:        #0d0a06;
+  --bg2:       #1a140a;
+  --stone:     #2a2218;
+  --stone2:    #3a3020;
+  --red:       #8b1a1a;
+  --red-light: #cc3333;
+  --blue:      #1a3a6b;
+  --blue-light:#4488cc;
+  --correct:   #2d6e2d;
+  --wrong:     #6e1a1a;
+  --text:      #e8d89a;
+  --text-dim:  #9a8a5a;
+  --shadow:    rgba(0,0,0,0.7);
+  --font-title:'Georgia', 'Times New Roman', serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-title);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-image:
+    radial-gradient(ellipse at top, #1a1206 0%, #0d0a06 60%),
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 40px,
+      rgba(200,168,75,0.015) 40px,
+      rgba(200,168,75,0.015) 41px
+    );
+}
+
+/* ── TOP BANNER ── */
+header {
+  width: 100%;
+  max-width: 820px;
+  text-align: center;
+  padding: 2rem 1rem 1rem;
+  position: relative;
+}
+
+.banner-deco {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.banner-deco::before,
+.banner-deco::after {
+  content: '';
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+}
+
+.crown { font-size: 2rem; filter: drop-shadow(0 0 8px #c8a84b88); }
+
+h1 {
+  font-size: clamp(1.4rem, 4vw, 2.4rem);
+  color: var(--gold);
+  text-shadow: 0 0 20px #c8a84b55, 2px 2px 4px #000;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-top: 0.4rem;
+}
+
+.rule-line {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold-dark), transparent);
+  margin: 1rem auto 0;
+}
+
+/* ── MAIN CARD ── */
+main {
+  width: 100%;
+  max-width: 820px;
+  padding: 0 1rem 3rem;
+  flex: 1;
+}
+
+.card {
+  background: linear-gradient(160deg, var(--stone) 0%, var(--bg2) 100%);
+  border: 2px solid var(--gold-dark);
+  border-radius: 4px;
+  box-shadow:
+    0 0 0 1px #000,
+    0 8px 40px var(--shadow),
+    inset 0 1px 0 rgba(200,168,75,0.15);
+  padding: 2rem;
+  position: relative;
+}
+
+.card::before {
+  content: '✦';
+  position: absolute;
+  top: -0.6rem; left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg2);
+  padding: 0 0.5rem;
+  color: var(--gold);
+  font-size: 0.9rem;
+}
+
+/* ── PROGRESS ── */
+.progress-bar-wrap {
+  background: var(--stone2);
+  border: 1px solid var(--gold-dark);
+  border-radius: 2px;
+  height: 10px;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(to right, var(--gold-dark), var(--gold));
+  transition: width 0.5s ease;
+  box-shadow: 0 0 8px var(--gold);
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ── QUESTION ── */
+.question-num {
+  font-size: 0.75rem;
+  color: var(--gold);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+}
+
+.question-text {
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  color: var(--parchment);
+  line-height: 1.55;
+  margin-bottom: 1.6rem;
+  min-height: 3em;
+}
+
+/* ── ANSWERS ── */
+.answers { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+
+@media (max-width: 520px) { .answers { grid-template-columns: 1fr; } }
+
+.btn-answer {
+  background: linear-gradient(160deg, var(--stone2) 0%, var(--bg2) 100%);
+  border: 1px solid var(--gold-dark);
+  border-radius: 3px;
+  color: var(--text);
+  font-family: var(--font-title);
+  font-size: 0.95rem;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-answer:hover:not(:disabled) {
+  background: linear-gradient(160deg, #3a3020 0%, #2a2218 100%);
+  border-color: var(--gold);
+  color: var(--gold);
+  transform: translateY(-1px);
+}
+
+.btn-answer:disabled { cursor: default; }
+
+.btn-answer.correct {
+  background: linear-gradient(160deg, #1a3a1a 0%, #0d200d 100%);
+  border-color: #4a9a4a;
+  color: #7adf7a;
+}
+
+.btn-answer.wrong {
+  background: linear-gradient(160deg, #3a1010 0%, #200808 100%);
+  border-color: #9a3333;
+  color: #df7a7a;
+}
+
+.btn-answer .letter {
+  display: inline-block;
+  width: 1.4em;
+  color: var(--gold);
+  font-weight: bold;
+}
+
+/* ── FEEDBACK ── */
+.feedback {
+  margin-top: 1.2rem;
+  min-height: 1.6rem;
+  font-size: 0.9rem;
+  text-align: center;
+  letter-spacing: 0.05em;
+  transition: opacity 0.3s;
+}
+.feedback.correct { color: #7adf7a; }
+.feedback.wrong   { color: #df7a7a; }
+
+/* ── NEXT BUTTON ── */
+.btn-next {
+  display: block;
+  margin: 1.4rem auto 0;
+  background: linear-gradient(160deg, var(--gold-dark), #5a3c10);
+  border: 1px solid var(--gold);
+  border-radius: 3px;
+  color: var(--parchment);
+  font-family: var(--font-title);
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  padding: 0.65rem 2.2rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: background 0.15s, transform 0.1s;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+.btn-next:hover { background: linear-gradient(160deg, #c8a84b, #7a5c1e); transform: translateY(-1px); }
+.btn-next.hidden { display: none; }
+
+/* ── RESULTS ── */
+.results { text-align: center; }
+.results-title {
+  font-size: clamp(1.3rem, 4vw, 2rem);
+  color: var(--gold);
+  text-shadow: 0 0 20px #c8a84b66;
+  margin-bottom: 0.5rem;
+}
+.results-score {
+  font-size: clamp(2.5rem, 8vw, 4rem);
+  color: var(--parchment);
+  margin: 0.8rem 0;
+  text-shadow: 2px 2px 8px #000;
+}
+.results-msg { font-size: 1rem; color: var(--text-dim); margin-bottom: 1.8rem; }
+.results-breakdown { text-align: left; margin-bottom: 1.6rem; }
+.rb-item {
+  display: flex; align-items: flex-start; gap: 0.6rem;
+  font-size: 0.85rem; padding: 0.4rem 0;
+  border-bottom: 1px solid var(--stone2); color: var(--text-dim);
+}
+.rb-item .rb-icon { flex-shrink: 0; margin-top: 1px; }
+.rb-item.ok   .rb-icon { color: #7adf7a; }
+.rb-item.fail .rb-icon { color: #df7a7a; }
+.rb-item.ok   .rb-q   { color: var(--text); }
+.rb-correct { color: #7adf7a; font-style: italic; }
+
+footer {
+  width: 100%; max-width: 820px;
+  text-align: center; padding: 1rem;
+  font-size: 0.72rem; color: var(--text-dim);
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+
+@keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
+.card { animation: fadeIn 0.4s ease; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="banner-deco"><span class="crown">♛</span></div>
+  <h1>Heroes of Might &amp; Magic III</h1>
+  <div class="subtitle">Trivia Challenge — Test Your Knowledge of Erathia</div>
+  <div class="rule-line"></div>
+</header>
+
+<main>
+  <div class="card" id="quiz-card">
+    <div class="progress-label">
+      <span id="prog-text">Question 1 of 15</span>
+      <span id="score-text">Score: 0</span>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar" id="prog-bar" style="width:0%"></div></div>
+    <div class="question-num" id="q-num">Question 1</div>
+    <div class="question-text" id="q-text"></div>
+    <div class="answers" id="answers"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="btn-next hidden" id="btn-next">Next Question ▶</button>
+  </div>
+</main>
+
+<footer>⚔ Heroes of Might &amp; Magic III — Knowledge of Erathia ⚔</footer>
+
+<script>
+const QUESTIONS = [
+  {
+    q: "How many primary skills are there in Heroes of Might & Magic III?",
+    opts: ["3 — Attack, Defense, Spell Power",
+           "4 — Attack, Defense, Spell Power, Knowledge",
+           "5 — Attack, Defense, Speed, Spell Power, Knowledge",
+           "6 — including Luck and Morale"],
+    a: 1,
+    note: "The four primary skills are Attack, Defense, Spell Power, and Knowledge."
+  },
+  {
+    q: "How many different town factions exist in the base HoMM3 game (no expansions)?",
+    opts: ["6", "7", "8", "9"],
+    a: 2,
+    note: "Castle, Rampart, Tower, Inferno, Necropolis, Dungeon, Stronghold, Fortress — 8 factions."
+  },
+  {
+    q: "What is the upgraded form of the Angel in the Castle faction?",
+    opts: ["Seraphim", "Archangel", "Holy Crusader", "Divine Champion"],
+    a: 1,
+    note: "Angels upgrade to Archangels, one of the most powerful level-7 creatures in the game."
+  },
+  {
+    q: "Which faction has Green Dragons and Gold Dragons as its level-7 creatures?",
+    opts: ["Castle", "Tower", "Dungeon", "Rampart"],
+    a: 3,
+    note: "Rampart (Nature/Elf faction) — Green Dragon upgrades to Gold Dragon."
+  },
+  {
+    q: "What is the base (non-upgraded) level-7 unit of the Inferno faction?",
+    opts: ["Demon", "Pit Fiend", "Devil", "Efreet"],
+    a: 2,
+    note: "Devil is Inferno's level-7 unit; it upgrades to the Arch Devil."
+  },
+  {
+    q: "Who is the main protagonist of HoMM3's campaign 'Restoration of Erathia'?",
+    opts: ["Roland Ironfist", "Catherine Ironfist", "Morglin Ironfist", "Tarnum"],
+    a: 1,
+    note: "Catherine Ironfist, Queen of Erathia, leads the campaign to reclaim her homeland."
+  },
+  {
+    q: "What school of magic does the 'Armageddon' spell belong to?",
+    opts: ["Earth", "Air", "Water", "Fire"],
+    a: 3,
+    note: "Armageddon is a Fire Magic spell dealing massive damage to ALL creatures on the battlefield."
+  },
+  {
+    q: "How many creature stacks can a hero carry in their army?",
+    opts: ["5", "6", "7", "8"],
+    a: 2,
+    note: "A hero's army has exactly 7 creature slots."
+  },
+  {
+    q: "Which spell damages ALL units on the battlefield — both yours and the enemy's?",
+    opts: ["Chain Lightning", "Armageddon", "Meteor Shower", "Death Ripple"],
+    a: 1,
+    note: "Armageddon hits every creature on the field. Pair it with immunity artifacts to exploit it safely."
+  },
+  {
+    q: "What is the base (non-upgraded) level-7 creature of the Necropolis faction?",
+    opts: ["Ghost Dragon", "Bone Dragon", "Skeleton Warrior", "Vampire Lord"],
+    a: 1,
+    note: "Bone Dragon is Necropolis's level-7 unit; it upgrades to the Ghost Dragon."
+  },
+  {
+    q: "Which secondary skill gives the hero a daily gold income each day?",
+    opts: ["Diplomacy", "Estates", "Leadership", "Scouting"],
+    a: 1,
+    note: "Estates provides +125 / +250 / +500 gold per day at Basic / Advanced / Expert level."
+  },
+  {
+    q: "Which faction has Black Dragons as its level-7 unit?",
+    opts: ["Stronghold", "Necropolis", "Inferno", "Dungeon"],
+    a: 3,
+    note: "Dungeon's level-7 is the Black Dragon — immune to all spells and devastatingly powerful."
+  },
+  {
+    q: "What are the three mastery levels of secondary skills in HoMM3?",
+    opts: ["Novice / Skilled / Master",
+           "Apprentice / Journeyman / Master",
+           "Basic / Advanced / Expert",
+           "Minor / Medium / Major"],
+    a: 2,
+    note: "Secondary skills advance through Basic → Advanced → Expert."
+  },
+  {
+    q: "What is the name of the building in the Castle town that produces Angels?",
+    opts: ["Hall of Angels", "Angel Shrine", "Portal of Glory", "Heaven's Gate"],
+    a: 2,
+    note: "The Portal of Glory is the level-7 Castle dwelling that recruits Angels (Archangels when upgraded)."
+  },
+  {
+    q: "What school of magic does the powerful single-target 'Implosion' spell belong to?",
+    opts: ["Fire", "Air", "Earth", "Water"],
+    a: 2,
+    note: "Implosion is an Earth Magic spell — one of the highest single-target damage spells in the game."
+  }
+];
+
+const LETTERS = ['A','B','C','D'];
+const RANKS = [
+  [0,  4,  "A wandering peasant… Keep adventuring!"],
+  [5,  7,  "A promising squire. Not bad!"],
+  [8,  10, "A seasoned knight of Erathia."],
+  [11, 13, "A true hero of Erathia!"],
+  [14, 15, "A living Legend of Erathia! ♛"]
+];
+
+let current = 0, score = 0, answered = false;
+const history = [];
+
+function getRank(s) { return RANKS.find(([lo,hi]) => s >= lo && s <= hi)[2]; }
+
+function renderQuestion() {
+  const q = QUESTIONS[current];
+  answered = false;
+  document.getElementById('prog-text').textContent = `Question ${current+1} of ${QUESTIONS.length}`;
+  document.getElementById('score-text').textContent = `Score: ${score}`;
+  document.getElementById('prog-bar').style.width = `${(current / QUESTIONS.length) * 100}%`;
+  document.getElementById('q-num').textContent = `Question ${current + 1}`;
+  document.getElementById('q-text').textContent = q.q;
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('btn-next').classList.add('hidden');
+
+  const box = document.getElementById('answers');
+  box.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'btn-answer';
+    btn.innerHTML = `<span class="letter">${LETTERS[i]}.</span> ${opt}`;
+    btn.addEventListener('click', () => pick(i));
+    box.appendChild(btn);
+  });
+}
+
+function pick(idx) {
+  if (answered) return;
+  answered = true;
+  const q = QUESTIONS[current];
+  const btns = document.querySelectorAll('.btn-answer');
+  const ok = idx === q.a;
+  if (ok) score++;
+  history.push({ q: q.q, chosen: idx, correct: q.a, ok, note: q.note, opts: q.opts });
+
+  btns.forEach((b, i) => {
+    b.disabled = true;
+    if (i === q.a) b.classList.add('correct');
+    else if (i === idx && !ok) b.classList.add('wrong');
+  });
+
+  const fb = document.getElementById('feedback');
+  fb.textContent = ok ? ('✦ Correct! ' + q.note) : ('✗ Wrong. ' + q.note);
+  fb.className = 'feedback ' + (ok ? 'correct' : 'wrong');
+  document.getElementById('score-text').textContent = `Score: ${score}`;
+  const nb = document.getElementById('btn-next');
+  nb.classList.remove('hidden');
+  nb.textContent = current < QUESTIONS.length - 1 ? 'Next Question ▶' : 'See Results ▶';
+}
+
+function showResults() {
+  document.getElementById('prog-bar').style.width = '100%';
+  const bd = history.map(h => {
+    const ans = !h.ok ? `<span class="rb-correct"> ✓ ${h.opts[h.correct]}</span>` : '';
+    return `<div class="rb-item ${h.ok ? 'ok' : 'fail'}">
+      <span class="rb-icon">${h.ok ? '✦' : '✗'}</span>
+      <span class="rb-q">${h.q}${ans}</span></div>`;
+  }).join('');
+
+  document.getElementById('quiz-card').innerHTML = `
+    <div class="results">
+      <div class="results-title">Quest Complete!</div>
+      <div class="results-score">${score} / ${QUESTIONS.length}</div>
+      <div class="results-msg">${getRank(score)}</div>
+      <div class="results-breakdown">${bd}</div>
+      <button class="btn-next" onclick="restart()">Play Again ↺</button>
+    </div>`;
+}
+
+function restart() {
+  current = 0; score = 0; answered = false; history.length = 0;
+  document.getElementById('quiz-card').innerHTML = `
+    <div class="progress-label">
+      <span id="prog-text">Question 1 of 15</span>
+      <span id="score-text">Score: 0</span>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar" id="prog-bar" style="width:0%"></div></div>
+    <div class="question-num" id="q-num">Question 1</div>
+    <div class="question-text" id="q-text"></div>
+    <div class="answers" id="answers"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="btn-next hidden" id="btn-next">Next Question ▶</button>`;
+  document.getElementById('btn-next').addEventListener('click', nextQ);
+  renderQuestion();
+}
+
+function nextQ() {
+  current++;
+  if (current >= QUESTIONS.length) showResults();
+  else renderQuestion();
+}
+
+document.getElementById('btn-next').addEventListener('click', nextQ);
+renderQuestion();
+</script>
+</body>
+</html>
